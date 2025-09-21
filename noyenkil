@@ -1,0 +1,135 @@
+#!/bin/bash
+# noyenkil - Site configuration and deployment script
+# This file contains site-specific configurations and utilities
+
+# Site configuration
+SITE_NAME="renovando.uy"
+SITE_DESCRIPTION="tu confort, nuestra misión"
+SITE_URL="https://renovando-uy.github.io"
+
+# Contact information
+WHATSAPP_NUMBER="59895713304"
+INSTAGRAM_HANDLE="renovando_uy"
+
+# Services configuration
+SERVICES=(
+    "Instalación y mantenimiento de aire acondicionado"
+    "Obras en yeso"
+    "Refrigeración automotriz"
+    "Electricidad residencial"
+    "Instalación de cámaras de seguridad"
+)
+
+# Location information
+LOCATION="Solís de Mataojo, Uruguay"
+SERVICE_AREAS="Canelones, Maldonado, Lavalleja y Montevideo"
+
+# SEO and meta configuration
+META_TITLE="renovando.uy - Servicios de instalación y mantenimiento"
+META_DESCRIPTION="renovando.uy — tu confort, nuestra misión. Instalación y mantenimiento de aire acondicionado, yeso, refrigeración automotriz, electricidad, cámaras de seguridad."
+
+# Function to validate site structure
+validate_site() {
+    echo "Validating site structure..."
+    
+    # Check for essential files
+    local required_files=("index.html" "favicon.ico" "logo.jpeg")
+    for file in "${required_files[@]}"; do
+        if [[ ! -f "$file" ]]; then
+            echo "Warning: Missing required file: $file"
+        else
+            echo "✓ Found: $file"
+        fi
+    done
+    
+    # Check for service images
+    local service_images=("ac.jpg" "oy.jpg" "rf.jpg" "er.webp" "cs.jpeg" "ia.jpg")
+    for image in "${service_images[@]}"; do
+        if [[ ! -f "$image" ]]; then
+            echo "Warning: Missing service image: $image"
+        else
+            echo "✓ Found: $image"
+        fi
+    done
+    
+    # Check for _app directory
+    if [[ ! -d "_app" ]]; then
+        echo "Error: Missing _app directory"
+        return 1
+    else
+        echo "✓ Found: _app directory"
+    fi
+    
+    echo "Site validation completed."
+}
+
+# Function to optimize images (placeholder)
+optimize_images() {
+    echo "Image optimization would be performed here..."
+    echo "Consider using tools like imagemin or similar for production."
+}
+
+# Function to generate sitemap
+generate_sitemap() {
+    echo "Generating sitemap.xml..."
+    cat > sitemap.xml << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>$SITE_URL</loc>
+        <lastmod>$(date -u +%Y-%m-%dT%H:%M:%S+00:00)</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>
+EOF
+    echo "✓ Generated sitemap.xml"
+}
+
+# Function to generate robots.txt
+generate_robots() {
+    echo "Generating robots.txt..."
+    cat > robots.txt << EOF
+User-agent: *
+Allow: /
+
+Sitemap: $SITE_URL/sitemap.xml
+EOF
+    echo "✓ Generated robots.txt"
+}
+
+# Main function
+main() {
+    echo "=== noyenkil - Site Management Script ==="
+    echo "Site: $SITE_NAME"
+    echo "Description: $SITE_DESCRIPTION"
+    echo "URL: $SITE_URL"
+    echo ""
+    
+    case "${1:-validate}" in
+        "validate")
+            validate_site
+            ;;
+        "sitemap")
+            generate_sitemap
+            ;;
+        "robots")
+            generate_robots
+            ;;
+        "all")
+            validate_site
+            generate_sitemap
+            generate_robots
+            ;;
+        *)
+            echo "Usage: $0 [validate|sitemap|robots|all]"
+            echo "  validate - Check site structure"
+            echo "  sitemap  - Generate sitemap.xml"
+            echo "  robots   - Generate robots.txt"
+            echo "  all      - Run all operations"
+            ;;
+    esac
+}
+
+# Run main function with arguments
+main "$@"
