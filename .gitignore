@@ -1,0 +1,10 @@
+# SvelteKit / Node source project
+node_modules/
+.svelte-kit/
+.vite/
+.env
+.env.*
+!.env.example
+
+# tool state
+.omc/
